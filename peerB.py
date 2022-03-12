@@ -12,7 +12,8 @@ def server() :
 
     if pswd == password :
         # device's IP address
-        SERVER_HOST = "0.0.0.0"
+        #SERVER_HOST = "0.0.0.0"
+        SERVER_HOST = socket.gethostbyname(socket.gethostname())
         SERVER_PORT = 5001
 
         # receive 4096 bytes each time
@@ -90,7 +91,8 @@ def client() :
         s = socket.socket()
 
         # the ip address or hostname of the server, the receiver
-        host = "10.6.9.187"
+        #host = "10.6.9.187"
+        host = socket.gethostbyname(socket.gethostname())
 
         # the port to be used
         port = 5001
