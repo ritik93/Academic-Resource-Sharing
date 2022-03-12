@@ -133,13 +133,16 @@ def server() :
         sys.exit("Password Incorrect")
 
 def main() :
-    inputstr = str(input("Do you want to act as a Server or a Client ?\nUsage :\nFor acting as a Server, enter  : SERVER\nFor acting as a Client, enter  : CLIENT\n"))
-    if inputstr == "SERVER" :
-        server()
-    elif inputstr == "CLIENT" :
-        client()
-    else :
-        sys.exit("Incorrect Input\nSee Usage")
+    while 1 :
+        inputstr = str(input("Do you want to act as a Server or a Client ?\nUsage :\nFor acting as a Server, enter  : SERVER\nFor acting as a Client, enter  : CLIENT\nFor exiting, enter : EXIT\n"))
+        if inputstr == "SERVER" :
+            server()
+        elif inputstr == "CLIENT" :
+            client()
+        elif inputstr == "EXIT" :
+            sys.exit("Program Exited\n")
+        else :
+            print("Incorrect Input\nSee Usage")
 
 if __name__ == "__main__" :
     main()
