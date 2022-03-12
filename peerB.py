@@ -7,7 +7,7 @@ import sys
 def server() :
     username = getpass.getuser()
     print("Username : " +username)
-    password = "password"
+    password = "server"
     pswd = getpass.getpass()
 
     if pswd == password :
@@ -80,7 +80,7 @@ def server() :
 def client() :
     username = getpass.getuser()
     print("Username : " +username)
-    password = "password"
+    password = "client"
     pswd = getpass.getpass()
 
     if pswd == password :
