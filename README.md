@@ -9,14 +9,14 @@ Creating a Peer-to-Peer Academic Resource Sharing System
 5. peerA.py and peerB.py run infinitely until the user explicitly enters "EXIT" 
 
 ## How to Run the code on your local machine :
-1. Install tqdm using the command : 
+1. Install tqdm using the command :   
     For Mac : pip3 install tqdm  
     For Windows : pip install tqdm
-2. Run the file peerA.py on a terminal window run the following command :
-    For Mac : python3 peerA.py
+2. Run the file peerA.py on a terminal window run the following command :  
+    For Mac : python3 peerA.py  
     For Windows : python peerA.py
-3. Run the file peerB.py on a second terminal window
-    For Mac : python3 peerB.py                            
+3. Run the file peerB.py on a second terminal window  
+    For Mac : python3 peerB.py                              
     For Windows : python peerB.py
 4. If you choose to run the peer as a SERVER, the password is : server
 5. If you choose to run the peer as a CLIENT, the password is : client
