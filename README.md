@@ -2,5 +2,7 @@
 Creating a Peer-to-Peer Academic Resource Sharing System
 
 ## Implementation
-1. The server has a username and password for authentication
-2. The client can upload any file ,in general, for eg : .pdf, .txt, to the server 
+1. Two Peers are created, namely, Peer A and Peer B
+2. On running both peerA.py and peerB.py it is asked that whether you want to act as a client or a server
+3. When one peer acts a client and the other as a server
+4. The client can then start sending the file to the server 
