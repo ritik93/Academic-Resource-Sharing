@@ -15,7 +15,7 @@ def client() :
         BUFFER_SIZE = 4096 # send 4096 bytes each time step
 
         # create the client socket
-        s = socket.socket()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # the ip address or hostname of the server, the receiver
         #host = "10.6.9.187"
@@ -78,7 +78,7 @@ def server() :
 
         # create the server socket
         # TCP socket
-        s = socket.socket()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # bind the socket to our local address
         s.bind((SERVER_HOST, SERVER_PORT))
