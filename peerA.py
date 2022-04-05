@@ -4,6 +4,8 @@ import os
 import getpass
 import sys
 import hashlib
+import ssl
+import time
 
 def client() :
     username = getpass.getuser()
@@ -23,15 +25,27 @@ def client() :
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # the ip address or hostname of the server, the receiver
-        #host = "10.6.9.187"
         host = socket.gethostbyname(socket.gethostname())
         # the port to be used
         port = 5001
 
+        server_sni_hostname = 'example.com'
+        server_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.crt'
+        client_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.crt'
+        client_key = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.key'
+
+        # Create an SSL context
+        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=server_cert)
+        context.load_cert_chain(certfile=client_cert, keyfile=client_key)
+
+        conn = context.wrap_socket(s, server_side = False, server_hostname = server_sni_hostname)
         print(f"[+] Connecting to {host}:{port}")
-        s.connect((host, port))
+        conn.connect((host, port))
         print("[+] Connected to ", host)
 
+        print("SSL established. Peer: {}".format(conn.getpeercert()))
+
+        
         # the name of file we want to send
         filename = input("File to Transfer : ")
 
@@ -39,7 +53,7 @@ def client() :
         filesize = os.path.getsize(filename)
 
         # send the filename and filesize
-        s.send(f"{filename}{SEPARATOR}{filesize}".encode())
+        conn.send(f"{filename}{SEPARATOR}{filesize}".encode())
 
         # start sending the file
         progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
@@ -54,13 +68,13 @@ def client() :
 
                 # we use sendall to assure transimission in 
                 # busy networks
-                s.sendall(bytes_read)
+                conn.sendall(bytes_read)
 
                 # update the progress bar
                 progress.update(len(bytes_read))
 
         # close the socket
-        s.close()
+        conn.close()
 
     else : 
         sys.exit("Password Incorrect")
@@ -89,6 +103,15 @@ def server() :
         BUFFER_SIZE = 4096
         SEPARATOR = "<SEPARATOR>"
 
+        server_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.crt'
+        server_key = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.key'
+        client_certs = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.crt'
+
+        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        context.verify_mode = ssl.CERT_REQUIRED
+        context.load_cert_chain(certfile=server_cert, keyfile=server_key)
+        context.load_verify_locations(cafile=client_certs)
+
         # bind the socket to our local address
         s.bind((SERVER_HOST, SERVER_PORT))
 
@@ -100,12 +123,16 @@ def server() :
 
         # accept connection if there is any
         client_socket, address = s.accept() 
+
         # if below code is executed, that means the sender is connected
         print(f"[+] {address} is connected.")
 
+        conn = context.wrap_socket(client_socket, server_side = True)
+        print("SSL established. Peer: {}".format(conn.getpeercert()))
+
         # receive the file infos
         # receive using client socket, not server socket
-        received = client_socket.recv(BUFFER_SIZE).decode()
+        received = conn.recv(BUFFER_SIZE).decode()
         filename, filesize = received.split(SEPARATOR)
 
         # remove absolute path if there is
@@ -120,7 +147,7 @@ def server() :
         with open(filename, "wb") as f: 
             while True:
                 # read 1024 bytes from the socket (receive)
-                bytes_read = client_socket.recv(BUFFER_SIZE)
+                bytes_read = conn.recv(BUFFER_SIZE)
                 
                 if not bytes_read:    
                     # nothing is received
@@ -134,7 +161,7 @@ def server() :
                 progress.update(len(bytes_read))
 
         # close the client socket
-        client_socket.close()
+        conn.close()
 
         # close the server socket
         s.close()
