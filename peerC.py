@@ -202,13 +202,80 @@ def server() :
 
             # close the client socket
             conn.close()
-
         while (True) :
             client_socket, address = s.accept()
             thread = threading.Thread(target = threading_clients, args = (client_socket, address))
             thread.start()
             s.close()
-       
+        
+        """
+        # accept connection if there is any
+        client_socket, address = s.accept() 
+
+        # if below code is executed, that means the sender is connected
+        print(f"[+] {address} is connected.")
+
+        conn = context.wrap_socket(client_socket, server_side = True)
+
+        client_certificate = conn.getpeercert()
+
+        subject = dict(item[0] for item in client_certificate['subject'])
+        commonName = subject['commonName']
+
+        if not client_certificate :
+            raise Exception("Unable to get the certificate from the client")
+
+        if commonName != 'client' :
+            raise Exception("Incorrect common name in client certificate")
+
+        notAfterTimestamp   = ssl.cert_time_to_seconds(client_certificate['notAfter'])
+        notBeforeTimestamp  = ssl.cert_time_to_seconds(client_certificate['notBefore'])
+        currentTimeStamp    = time.time()
+
+        if currentTimeStamp > notAfterTimestamp:
+            raise Exception("Expired server certificate")
+    
+        if currentTimeStamp < notBeforeTimestamp:
+            raise Exception("Server certificate not yet active")
+
+        print("SSL established. Peer: {}".format(client_certificate))
+
+        # receive the file infos
+        # receive using client socket, not server socket
+        received = conn.recv(BUFFER_SIZE).decode()
+        filename, filesize = received.split(SEPARATOR)
+
+        # remove absolute path if there is
+        filename = os.path.basename(filename)
+
+        # convert to integer
+        filesize = int(filesize)
+
+        # start receiving the file from the socket
+        # and writing to the file stream
+        progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+        with open(filename, "wb") as f: 
+            while True:
+                # read 1024 bytes from the socket (receive)
+                bytes_read = conn.recv(BUFFER_SIZE)
+                
+                if not bytes_read:    
+                    # nothing is received
+                    # file transmitting is done
+                    break
+
+                # write to the file the bytes we just received
+                f.write(bytes_read)
+                
+                # update the progress bar
+                progress.update(len(bytes_read))
+
+        # close the client socket
+        conn.close()
+        
+        # close the server socket
+        s.close()
+        """
     else :
         sys.exit("Password Incorrect")
 
