@@ -43,7 +43,27 @@ def client() :
         conn.connect((host, port))
         print("[+] Connected to ", host)
 
-        print("SSL established. Peer: {}".format(conn.getpeercert()))
+        server_certificate = conn.getpeercert()
+        subject = dict(item[0]for item in server_certificate['subject'])
+        commonName = subject['commonName']
+
+        if not server_certificate :
+            raise Exception("Unable to retrieve server certificate")
+
+        if commonName != 'example.com':
+            raise Exception("Incorrect common name in server certificate")
+
+        notAfterTimestamp   = ssl.cert_time_to_seconds(server_certificate['notAfter'])
+        notBeforeTimestamp  = ssl.cert_time_to_seconds(server_certificate['notBefore'])
+        currentTimeStamp    = time.time()
+
+        if currentTimeStamp > notAfterTimestamp:
+            raise Exception("Expired server certificate")
+    
+        if currentTimeStamp < notBeforeTimestamp:
+            raise Exception("Server certificate not yet active")
+        
+        print("SSL established. Peer: {}".format(server_certificate))
 
         
         # the name of file we want to send
@@ -128,7 +148,29 @@ def server() :
         print(f"[+] {address} is connected.")
 
         conn = context.wrap_socket(client_socket, server_side = True)
-        print("SSL established. Peer: {}".format(conn.getpeercert()))
+
+        client_certificate = conn.getpeercert()
+
+        subject = dict(item[0] for item in client_certificate['subject'])
+        commonName = subject['commonName']
+
+        if not client_certificate :
+            raise Exception("Unable to get the certificate from the client")
+
+        if commonName != 'client' :
+            raise Exception("Incorrect common name in client certificate")
+
+        notAfterTimestamp   = ssl.cert_time_to_seconds(client_certificate['notAfter'])
+        notBeforeTimestamp  = ssl.cert_time_to_seconds(client_certificate['notBefore'])
+        currentTimeStamp    = time.time()
+
+        if currentTimeStamp > notAfterTimestamp:
+            raise Exception("Expired server certificate")
+    
+        if currentTimeStamp < notBeforeTimestamp:
+            raise Exception("Server certificate not yet active")
+
+        print("SSL established. Peer: {}".format(client_certificate))
 
         # receive the file infos
         # receive using client socket, not server socket
