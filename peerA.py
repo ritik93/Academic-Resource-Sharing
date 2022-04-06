@@ -29,7 +29,7 @@ def client() :
         #host = socket.gethostbyname(socket.gethostname())
         host = "10.35.70.9"
         # the port to be used
-        port = 5001
+        port = 33333
 
         server_sni_hostname = 'example.com'
         server_cert = "server.crt"
@@ -119,7 +119,7 @@ def server() :
         # device's IP address
         #SERVER_HOST = "0.0.0.0"
         SERVER_HOST = socket.gethostbyname(socket.gethostname())
-        SERVER_PORT = 5001
+        SERVER_PORT = 33333
 
         # receive 4096 bytes each time
         BUFFER_SIZE = 4096
