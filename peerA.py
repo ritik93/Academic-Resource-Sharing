@@ -31,9 +31,9 @@ def client() :
         port = 5001
 
         server_sni_hostname = 'example.com'
-        server_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.crt'
-        client_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.crt'
-        client_key = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.key'
+        server_cert = "server.crt"
+        client_cert = "client.crt"
+        client_key = "client.key"
 
         # Create an SSL context
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=server_cert)
@@ -124,9 +124,9 @@ def server() :
         BUFFER_SIZE = 4096
         SEPARATOR = "<SEPARATOR>"
 
-        server_cert = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.crt'
-        server_key = '/Users/ritik/Downloads/Academic-Resource-Sharing/server.key'
-        client_certs = '/Users/ritik/Downloads/Academic-Resource-Sharing/client.crt'
+        server_cert = "server.crt"
+        server_key = "server.key"
+        client_certs = "client.crt"
 
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         context.verify_mode = ssl.CERT_REQUIRED
@@ -207,7 +207,7 @@ def server() :
             client_socket, address = s.accept()
             thread = threading.Thread(target = threading_clients, args = (client_socket, address))
             thread.start()
-            s.close()
+            print(f"ACTIVE CONNECTIONS : {threading.active_count() - 1}")
        
     else :
         sys.exit("Password Incorrect")
