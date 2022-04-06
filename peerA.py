@@ -26,7 +26,8 @@ def client() :
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # the ip address or hostname of the server, the receiver
-        host = socket.gethostbyname(socket.gethostname())
+        #host = socket.gethostbyname(socket.gethostname())
+        host = "10.35.70.9"
         # the port to be used
         port = 5001
 
