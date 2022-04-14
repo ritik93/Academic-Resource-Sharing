@@ -17,6 +17,7 @@ The host ip is retrieved using socket.gethostbyname() function
 In the python files (peerA.py, peerB.py, peerC.py) placed outside Run_on local which are to be run on remote rasberry pis :  
 The host ip is explicity mentioned as "10.35.70.9" which had to be done so that a client program running on one rasberry pi can connect to another rasberry pi running a server program  
   
+### Steps  
 1. Install tqdm using the command :   
     For Mac and rasberry pi : pip3 install tqdm  
     For Windows : pip install tqdm
