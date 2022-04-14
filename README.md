@@ -9,7 +9,7 @@ Created a secure File Sharing System where the multithreaded server listens for 
 5. The clients can run infinitely until the user explicitly enters "EXIT" and the multithreaded server will continue to listen for the clients 
 
 ## How to Run the code on remote rasberry pis and your local machine :
-The steps are the same for running the files on your local machine except, the files to be run to run on you local machine are placed in a separate folder called Run_on_local and these are the following deifferences between the two files are as follows :  
+The steps are the same for running the files on your local machine except, the files to be run to run on you local machine are placed in a separate folder called Run_on_local and these are the following differences between the two sets of files are as follows :  
   
 In the python files (peerA.py, peerB.py, peerC.py) of Run_on_local :  
 The host ip is retrieved using socket.gethostbyname() function  
